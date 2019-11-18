@@ -1,0 +1,154 @@
+# Andrew Christiansen
+# Employee_Login
+
+from tkinter import *
+import os
+
+def register():
+    
+    # Create register view
+    global register_view
+    register_view = Toplevel(view)
+    register_view.geometry("300x250")
+    register_view.title("Register")
+    
+    # Heading label
+    Label(register_view, text = "Welecome to Federated", bg = "red", fg = "white", width = "300", height = "2", font = ("calibri 16 bold")).pack()
+    Label(register_view, text = "").pack()
+
+    # Define terms
+    global username
+    global password
+    username = StringVar()
+    password = StringVar()
+    global username_record
+    global password_record
+
+    #Create user records
+    Label(register_view, text = "Create Username").pack()
+    username_record = Entry(register_view, textvariable = username)
+    username_record.pack()
+    Label(register_view, text = "Create Password").pack()
+    password_record = Entry(register_view, textvariable = password)
+    password_record.pack()
+    Label(register_view, text = "").pack()
+    Button(register_view, text = "Add User to System", width = "15", height = "1", command = register_user).pack()
+ 
+def register_user():
+ 
+    # Get username and password
+    username_info = username.get()
+    password_info = password.get()
+ 
+    # Open a new file and write into it
+    file = open(username_info, "w")
+    file.write(username_info + "\n")
+    file.write(password_info)
+    file.close()
+    
+    # Delete the entry after register button is clicked
+    username_record.delete(0, END)
+    password_record.delete(0, END)
+ 
+    # Create success notification
+    Label(register_view, text = "Registration Success", fg = "green", font = ("calibri", 11)).pack()
+ 
+def login_verification():
+
+    # Get username and password
+    username1 = username_verification.get()
+    password1 = password_verification.get()
+    
+    # Delete the entry after login button is clicked
+    username_entry.delete(0, END)
+    password_entry.delete(0, END)
+    
+    # Search through files to find details on usernames and passwords
+    list_files = os.listdir()
+    if username1 in list_files:
+        file1 = open(username1, "r")
+        verification = file1.read().splitlines()
+        if password1 in verification:
+            login_success()
+        else:
+            password_error()
+    else:
+        unknown_username()
+        
+# Popup for valid username and password
+def login_success():
+    global login_success_view
+    login_success_view = Toplevel(view)
+    login_success_view.geometry("150x100")
+    login_success_view.title("Login Confirmed")
+    Label(login_success_view, text = "Login Successful").pack()
+    Button(login_success_view, text = "OK", command = close_login_success).pack()
+
+# Popup for invalid username
+def unknown_username():
+    global unknown_username_view
+    unknown_username_view = Toplevel(view)
+    unknown_username_view.geometry("150x100")
+    unknown_username_view.title("Unknown Username")
+    Label(unknown_username_view, text = "Username Unknown").pack()
+    Button(unknown_username_view, text = "Try Again", command = close_unknown_username).pack()
+    
+# Popup for invalid password
+def password_error():
+    global password_error_view
+    password_error_view = Toplevel(view)
+    password_error_view.geometry("150x100")
+    password_error_view.title("Password Error")
+    Label(password_error_view, text = "Password Error").pack()
+    Button(password_error_view, text = "Try Again", command = close_password_error).pack()
+    
+# Close popups once read
+def close_login_success():
+    login_success_view.destroy()
+    
+def close_unknown_username():
+    unknown_username_view.destroy()
+    
+def close_password_error():
+    password_error_view.destroy()
+    
+def main_screen():
+    
+    # Create main view
+    global view
+    view = Tk()
+    view.geometry("300x325")
+    view.title("Login")
+    
+    # Heading label
+    Label(text = "Federated Employee Login", bg = "red", fg = "white", width = "300", height = "2", font = ("calibri 16 bold")).pack()
+    Label(text ="").pack()
+    
+    # Define terms
+    global username_verification
+    global password_verification
+    username_verification = StringVar()
+    password_verification = StringVar()
+    global username_entry
+    global password_entry
+    
+    # Enter user entries
+    Label(text = "Enter Username").pack()
+    username_entry = Entry(view, textvariable = username_verification)
+    username_entry.pack()
+    Label(text ="").pack()
+    Label(text = "Enter Password").pack()
+    password_entry = Entry(view, textvariable = password_verification)
+    password_entry.pack()
+    Label(text ="").pack()
+    
+    # Create login button
+    Button(text = "Login", width = "10", height = "1", command = login_verification).pack()
+    Label(text = "").pack()
+    Label (text = "OR").pack()
+    Label(text = "").pack()
+    Button(text = "Register", width = "10", height = "1", command = register).pack()
+    
+    view.mainloop()
+    
+main_screen()
